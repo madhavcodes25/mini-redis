@@ -43,3 +43,38 @@ TEST_CASE("many keys all survive, including collisions") {
         REQUIRE(table.get("key" + std::to_string(i)) == std::to_string(i));
     }
 }
+
+TEST_CASE("table grows when load factor passes 0.75") {
+    HashTable table;
+    REQUIRE(table.bucket_count() == 16);
+    for (int i = 0; i < 12; i++) table.set("k" + std::to_string(i), "v");
+    REQUIRE(table.bucket_count() == 16);
+    table.set("k12", "v");
+    REQUIRE(table.bucket_count() == 32); 
+}
+
+TEST_CASE("every key survives many resizes") {
+    HashTable table;
+    for (int i = 0; i < 10000; i++) table.set("key" + std::to_string(i), std::to_string(i));
+    REQUIRE(table.size() == 10000);
+    for (int i = 0; i < 10000; i++) {
+        REQUIRE(table.get("key" + std::to_string(i)) == std::to_string(i));
+    }
+}
+
+TEST_CASE("delete still works after a resize") {
+    HashTable table;
+    for (int i = 0; i < 100; i++) table.set("key" + std::to_string(i), "v");
+    REQUIRE(table.del("key50") == true);
+    REQUIRE(table.get("key50") == std::nullopt);
+    REQUIRE(table.size() == 99);
+}
+
+TEST_CASE("size counts keys, not writes") {
+    HashTable table;
+    table.set("a", "1");
+    table.set("a", "2");
+    REQUIRE(table.size() == 1);
+    table.del("a");
+    REQUIRE(table.size() == 0);
+}
