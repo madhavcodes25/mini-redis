@@ -11,12 +11,17 @@ FetchContent_Declare(Catch2
   GIT_TAG v3.5.0)
 FetchContent_MakeAvailable(Catch2)
 
+add_library(core STATIC
+  src/hash_table.cpp
+  src/expiring_store.cpp
+  src/lru_index.cpp)
+target_include_directories(core PUBLIC include)
+
 add_executable(tests
   tests/test_hash_table.cpp
   tests/test_expiring_store.cpp
-  src/hash_table.cpp
-  src/expiring_store.cpp) #executables and the source files. Create a runnable program named tests, and compile it using these specific .cpp files.
-target_include_directories(tests PRIVATE include) #where to find out header files (.h or .hpp)
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain) #any external libraries we need
-add_executable(bench bench/bench.cpp src/hash_table.cpp)
-target_include_directories(bench PRIVATE include)
+  tests/test_lru.cpp)
+target_link_libraries(tests PRIVATE core Catch2::Catch2WithMain)
+
+add_executable(bench bench/bench.cpp)
+target_link_libraries(bench PRIVATE core)
