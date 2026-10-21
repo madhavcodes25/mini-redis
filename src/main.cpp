@@ -1,32 +1,17 @@
+#include "command_handler.hpp"
 #include <iostream>
 #include <string>
-#include "command_handler.hpp"
-#include "hash_table.hpp"
 
 int main() {
-    HashTable store;
+    ExpiringStore store(1000);                 // at most 1000 keys, then LRU eviction
     CommandHandler handler(store);
+    std::cout << "mini-redis (type EXIT to quit)\n> ";
     std::string line;
-
-    std::cout << "Mini-Redis CLI. Type EXIT to quit.\n";
-
-    while (true) {
-        std::cout << "127.0.0.1:6379> ";
-        
-        // Safely grab the whole line
-        if (!std::getline(std::cin, line)) break; 
-        
-        if (line == "EXIT") {
-            break;
-        }
-        
-        if (line.empty()) {
-            continue;
-        }
-
-        // Pass the raw line to the parser and print the result
-        std::cout << handler.execute(line) << std::endl;
+    while (std::getline(std::cin, line)) {
+        if (line == "EXIT" || line == "QUIT") break;
+        store.sweep();                         // drop keys that expired while idle
+        std::string reply = handler.execute(line);
+        if (!reply.empty()) std::cout << reply << "\n";
+        std::cout << "> ";
     }
-
-    return 0;
 }

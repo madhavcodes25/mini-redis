@@ -1,15 +1,12 @@
 #pragma once
+#include "expiring_store.hpp"
 #include <string>
-#include "hash_table.hpp"
 
 class CommandHandler {
 public:
-    // Initialize with a reference to the existing storage mechanism
-    CommandHandler(HashTable& store);
-
-    // Parses a single command line string and returns the output
-    std::string execute(const std::string& command_line);
+    explicit CommandHandler(ExpiringStore& store);
+    std::string execute(const std::string& line);   // returns the reply text
 
 private:
-    HashTable& store_;
+    ExpiringStore& store_;
 };
