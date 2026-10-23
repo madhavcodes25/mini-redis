@@ -131,6 +131,6 @@ CMakeLists.txt
 
 ## Contributions
 
-- **[Madhav Daluka]:**
-- **[Sankalp Singh Chauhan]:**
-- **[Mridul Gupta]:**
+- **Madhav Daluka**
+- **Sankalp Singh Chauhan:**
+- **Mridul Gupta**
