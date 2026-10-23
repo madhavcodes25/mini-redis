@@ -29,3 +29,6 @@ add_executable(bench bench/bench.cpp)
 target_link_libraries(bench PRIVATE core)
 add_executable(mini_redis_cli src/main.cpp)
 target_link_libraries(mini_redis_cli PRIVATE core)
+
+add_executable(bench_lru bench/bench_lru.cpp)
+target_link_libraries(bench_lru PRIVATE core)
